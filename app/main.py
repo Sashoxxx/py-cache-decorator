@@ -7,10 +7,12 @@ def cache(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> int:
-        if args in _cache:
+        kv_tuple = tuple(sorted(kwargs.items()))
+        _cache_key = (args, kv_tuple)
+        if _cache_key in _cache:
             print("Getting from cache")
         else:
             print("Calculating new result")
-            _cache[args] = func(*args, **kwargs)
-        return _cache[args]
+            _cache[_cache_key] = func(*args, **kwargs)
+        return _cache[_cache_key]
     return wrapper
